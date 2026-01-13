@@ -132,14 +132,21 @@ export const ConfigProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     // 3. Persist to Firebase
     // We send only the changed params to merge
-    await saveSiteConfig(newParams);
+    const result = await saveSiteConfig(newParams);
+    if (!result.success) {
+      console.error("Firebase Update Failed:", result.error);
+      alert("Hata: Ayarlar buluta kaydedilemedi! \nSebep: " + JSON.stringify(result.error));
+    }
   };
 
   const resetConfig = async () => {
     if (window.confirm("Tüm site ayarları ve şifreniz varsayılana dönecek. Emin misiniz?")) {
       setConfig(DEFAULT_CONFIG);
       localStorage.setItem('angora_site_config', JSON.stringify(DEFAULT_CONFIG));
-      await saveSiteConfig(DEFAULT_CONFIG);
+      const result = await saveSiteConfig(DEFAULT_CONFIG);
+      if (!result.success) {
+        alert("Sıfırlama hatası: " + JSON.stringify(result.error));
+      }
     }
   };
 

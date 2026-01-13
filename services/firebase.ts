@@ -10,6 +10,8 @@ const firebaseConfig = {
     appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
+console.log("Firebase Init:", firebaseConfig.projectId ? "OK" : "MISSING KEYS");
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
