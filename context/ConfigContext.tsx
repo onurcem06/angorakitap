@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { getSiteConfig, saveSiteConfig } from '../services/firebase';
 
 export interface StoreLink {
   id: string;
@@ -79,29 +80,72 @@ interface ConfigContextType {
 const ConfigContext = createContext<ConfigContextType | undefined>(undefined);
 
 export const ConfigProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [config, setConfig] = useState<SiteConfig>(() => {
-    const saved = localStorage.getItem('angora_site_config');
-    const parsed = saved ? JSON.parse(saved) : DEFAULT_CONFIG;
-    // Eğer eski versiyonlardan kalma bir config varsa ve şifre alanı yoksa ekleyelim
-    if (!parsed.adminPassword) parsed.adminPassword = DEFAULT_CONFIG.adminPassword;
-    return parsed;
-  });
+  const [config, setConfig] = useState<SiteConfig>(DEFAULT_CONFIG);
+  const [loading, setLoading] = useState(true);
 
+  // Load from Firebase on mount
   useEffect(() => {
-    localStorage.setItem('angora_site_config', JSON.stringify(config));
+    const loadConfig = async () => {
+      // First try to load from localstorage for instant paint explanation
+      const localSaved = localStorage.getItem('angora_site_config');
+      if (localSaved) {
+        setConfig(JSON.parse(localSaved));
+      }
+
+      // Then fetch fresh data from Firebase
+      try {
+        const result = await getSiteConfig();
+        if (result.success && result.data) {
+          // Merge default config with incoming data to ensure no missing fields
+          // if schema changes in future
+          const mergedConfig = { ...DEFAULT_CONFIG, ...result.data } as SiteConfig;
+          setConfig(mergedConfig);
+          // Update local storage to keep it fresh
+          localStorage.setItem('angora_site_config', JSON.stringify(mergedConfig));
+        } else {
+          // If no config in Firebase (first run), save the default to Firebase
+          await saveSiteConfig(DEFAULT_CONFIG);
+        }
+      } catch (error) {
+        console.error("Failed to load config from Firebase", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadConfig();
+  }, []);
+
+  // Update effect for CSS variables
+  useEffect(() => {
     document.documentElement.style.setProperty('--angora-orange', config.primaryColor);
     document.documentElement.style.setProperty('--font-main', config.fontFamily);
   }, [config]);
 
-  const updateConfig = (newParams: any) => {
-    setConfig(prev => ({ ...prev, ...newParams }));
+  const updateConfig = async (newParams: Partial<SiteConfig>) => {
+    // 1. Optimistic UI update (update state immediately)
+    const newConfig = { ...config, ...newParams };
+    setConfig(newConfig);
+
+    // 2. Update Local Storage for backup
+    localStorage.setItem('angora_site_config', JSON.stringify(newConfig));
+
+    // 3. Persist to Firebase
+    // We send only the changed params to merge
+    await saveSiteConfig(newParams);
   };
 
-  const resetConfig = () => {
+  const resetConfig = async () => {
     if (window.confirm("Tüm site ayarları ve şifreniz varsayılana dönecek. Emin misiniz?")) {
       setConfig(DEFAULT_CONFIG);
+      localStorage.setItem('angora_site_config', JSON.stringify(DEFAULT_CONFIG));
+      await saveSiteConfig(DEFAULT_CONFIG);
     }
   };
+
+  if (loading && !config) {
+    return <div className="h-screen w-full bg-[#0A0E17] flex items-center justify-center text-[#FF8C00]">Yükleniyor...</div>;
+  }
 
   return (
     <div style={{ fontFamily: config.fontFamily }}>
