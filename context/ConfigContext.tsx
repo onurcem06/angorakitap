@@ -116,11 +116,22 @@ export const ConfigProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     loadConfig();
   }, []);
 
-  // Update effect for CSS variables
+  // Update effect for CSS variables and favicon
   useEffect(() => {
     document.documentElement.style.setProperty('--angora-orange', config.primaryColor);
     document.documentElement.style.setProperty('--font-main', config.fontFamily);
-  }, [config]);
+
+    // Dynamic Favicon Update
+    const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
+    if (link) {
+      if (config.logoType === 'image' && config.logoUrl) {
+        link.href = config.logoUrl;
+      } else {
+        // Default emoji favicon
+        link.href = "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📖</text></svg>";
+      }
+    }
+  }, [config.primaryColor, config.fontFamily, config.logoUrl, config.logoType]);
 
   const updateConfig = async (newParams: Partial<SiteConfig>) => {
     // 1. Optimistic UI update (update state immediately)
@@ -135,7 +146,7 @@ export const ConfigProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const result = await saveSiteConfig(newParams);
     if (!result.success) {
       console.error("Firebase Update Failed:", result.error);
-      alert("Hata: Ayarlar buluta kaydedilemedi! \nSebep: " + JSON.stringify(result.error));
+      // alert("Hata: Ayarlar buluta kaydedilemedi! \nSebep: " + JSON.stringify(result.error));
     }
   };
 

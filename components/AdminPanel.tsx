@@ -115,18 +115,6 @@ const AdminPanel: React.FC = () => {
           </div>
           <h2 className="text-3xl font-black text-white mb-4 uppercase tracking-tighter text-center">ADMİN GİRİŞİ</h2>
 
-          {/* DEBUG INFO ON LOGIN SCREEN */}
-          <div className="w-full mb-6 p-4 bg-white/5 border border-white/10 rounded-xl">
-            <div className="flex justify-between text-[10px] font-bold tracking-widest border-b border-white/10 pb-2 mb-2">
-              <span className="text-gray-500">API KEY DURUMU</span>
-              <span className={import.meta.env.VITE_FIREBASE_API_KEY ? "text-green-500" : "text-red-500"}>
-                {import.meta.env.VITE_FIREBASE_API_KEY ? "✅ BAĞLI" : "❌ BAĞLI DEĞİL"}
-              </span>
-            </div>
-            <div className="text-[9px] text-gray-600 text-center">
-              {import.meta.env.VITE_FIREBASE_PROJECT_ID ? `Proje: ${import.meta.env.VITE_FIREBASE_PROJECT_ID}` : "Vercel Ayarları Eksik"}
-            </div>
-          </div>
           <form onSubmit={handleLogin} className="w-full space-y-5">
             <input
               type="password"
