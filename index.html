@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angora Kitap Akademi | Hayatı Oku</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --angora-orange: #FF8C00;
+            --night-blue: #0A0E17;
+            --star-white: #FFFFFF;
+            --shadow-black: #050505;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--shadow-black);
+            color: var(--star-white);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        h1, h2, h3, .font-montserrat {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+        .hero-bg {
+            background-image: url('https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&fit=crop&q=80&w=2000');
+            background-size: cover;
+            background-position: center bottom;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            position: relative;
+        }
+        
+        /* Gelişmiş Yıldız Efektleri */
+        .stars-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            animation: 
+                twinkle var(--duration) infinite ease-in-out,
+                drift var(--drift-duration) infinite linear;
+        }
+
+        /* Daha belirgin yanıp sönme */
+        @keyframes twinkle {
+            0%, 100% { 
+                opacity: 0.1; 
+                transform: scale(0.7);
+                filter: blur(0px);
+            }
+            50% { 
+                opacity: 1; 
+                transform: scale(1.6);
+                filter: drop-shadow(0 0 6px white);
+            }
+        }
+
+        @keyframes drift {
+            from { transform: translateY(0) translateX(0); }
+            to { transform: translateY(-80px) translateX(40px); }
+        }
+
+        /* Yeni Doğal Yıldız Kayması Efekti */
+        .shooting-star {
+            position: absolute;
+            top: var(--top);
+            left: var(--left);
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1), 0 0 0 8px rgba(255, 255, 255, 0.1), 0 0 20px rgba(255, 255, 255, 1);
+            animation: shoot-anim var(--duration) var(--delay) infinite ease-out;
+            opacity: 0;
+        }
+
+        .shooting-star::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 300px; /* Daha uzun kuyruk */
+            height: 1px;
+            background: linear-gradient(90deg, #fff, transparent);
+        }
+
+        @keyframes shoot-anim {
+            0% {
+                transform: rotate(var(--angle)) translateX(0);
+                opacity: 0;
+            }
+            1% {
+                opacity: 1;
+            }
+            25% { /* Hareket süresi %15'ten %25'e çıkarıldı - Daha yavaş kayma */
+                transform: rotate(var(--angle)) translateX(-1400px);
+                opacity: 0;
+            }
+            100% {
+                transform: rotate(var(--angle)) translateX(-1400px);
+                opacity: 0;
+            }
+        }
+
+        .font-script {
+            font-family: 'Dancing Script', cursive;
+        }
+        .social-card {
+            background: rgba(10, 14, 23, 0.6);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 140, 0, 0.15);
+            box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.7);
+        }
+        .animate-pulse-slow {
+            animation: pulse-slow 6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; transform: scale(1) rotate(-1deg); }
+            50% { opacity: 0.8; transform: scale(1.03) rotate(0deg); }
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://esm.sh/@google/genai@^1.35.0",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+    <div id="root"></div>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
