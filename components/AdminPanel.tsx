@@ -221,25 +221,6 @@ const AdminPanel: React.FC = () => {
                   )}
                 </div>
 
-                {/* DEBUG SECTION */}
-                <div className="p-8 bg-red-500/10 rounded-[2rem] border border-red-500/20 space-y-6">
-                  <h3 className="text-red-400 font-black text-sm uppercase tracking-widest text-center">BAĞLANTI DURUMU (DEBUG)</h3>
-                  <div className="space-y-2 text-[10px] uppercase font-bold tracking-widest">
-                    <div className="flex justify-between border-b border-white/5 pb-2">
-                      <span className="text-gray-500">API Key:</span>
-                      <span className={import.meta.env.VITE_FIREBASE_API_KEY ? "text-green-500" : "text-red-500"}>
-                        {import.meta.env.VITE_FIREBASE_API_KEY ? "MEVCUT" : "YOK (MISSING)"}
-                      </span>
-                    </div>
-                    <div className="flex justify-between border-b border-white/5 pb-2">
-                      <span className="text-gray-500">Project ID:</span>
-                      <span className="text-white">{import.meta.env.VITE_FIREBASE_PROJECT_ID || "YOK"}</span>
-                    </div>
-                    <div className="p-2 bg-black/40 rounded text-center text-gray-400 normal-case font-mono text-[9px]">
-                      Eğer yukarıda "YOK" yazıyorsa Vercel ayarları yapılmamış demektir.
-                    </div>
-                  </div>
-                </div>
               </div>
             )}
 
