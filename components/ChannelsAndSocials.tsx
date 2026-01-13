@@ -3,6 +3,15 @@ import React from 'react';
 import { Instagram, Twitter, Facebook, Youtube, ExternalLink, Phone, Mail, MapPin } from 'lucide-react';
 import { useConfig } from '../context/ConfigContext';
 
+// Helper to ensure URL has protocol
+const ensureAbsoluteUrl = (url: string) => {
+  if (!url) return "#";
+  if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("mailto:") || url.startsWith("tel:")) {
+    return url;
+  }
+  return `https://${url}`;
+};
+
 // Use React.FC for better type checking and to include standard React props like key
 const ContactItem: React.FC<{ Icon: any, text: string, href?: string, color: string }> = ({ Icon, text, href, color }) => {
   if (!text || text === "") return null;
@@ -20,14 +29,14 @@ const ContactItem: React.FC<{ Icon: any, text: string, href?: string, color: str
 const SocialIcon: React.FC<{ Icon: any, url: string, color: string, name: string }> = ({ Icon, url, color, name }) => {
   if (!url || url === "#") return null;
   return (
-    <a 
-      href={url} 
-      target="_blank" 
-      rel="noopener noreferrer" 
+    <a
+      href={ensureAbsoluteUrl(url)}
+      target="_blank"
+      rel="noopener noreferrer"
       className="group relative flex flex-col items-center"
       title={name}
     >
-      <div 
+      <div
         className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center bg-white/5 border border-white/10 transition-all duration-500 group-hover:scale-110 backdrop-blur-xl"
         style={{ boxShadow: `0 0 0px 0px ${color}00` }}
         onMouseEnter={(e) => {
@@ -51,9 +60,9 @@ const SocialIcon: React.FC<{ Icon: any, url: string, color: string, name: string
 // Fixed: Added React.FC type definition to resolve 'key' property error during mapping
 const StoreCard: React.FC<{ store: any, primaryColor: string }> = ({ store, primaryColor }) => {
   return (
-    <a 
-      href={store.url} 
-      target="_blank" 
+    <a
+      href={ensureAbsoluteUrl(store.url)}
+      target="_blank"
       rel="noopener noreferrer"
       className="group relative w-full md:w-[320px] bg-white/5 border border-white/10 rounded-[2.5rem] p-8 transition-all duration-500 hover:-translate-y-2 backdrop-blur-sm overflow-hidden flex flex-col items-center"
       onMouseEnter={(e) => e.currentTarget.style.borderColor = primaryColor}
@@ -62,19 +71,19 @@ const StoreCard: React.FC<{ store: any, primaryColor: string }> = ({ store, prim
       <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:opacity-100 transition-opacity">
         <ExternalLink size={14} style={{ color: primaryColor }} />
       </div>
-      
+
       <div className="w-24 h-24 bg-white rounded-3xl p-4 flex items-center justify-center shadow-2xl mb-6 group-hover:scale-110 transition-transform">
-        <img 
-          src={store.logo} 
-          alt={store.name} 
+        <img
+          src={store.logo}
+          alt={store.name}
           className="max-w-full max-h-full object-contain"
           onError={(e) => (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${store.name}&background=FF8C00&color=fff`}
         />
       </div>
-      
+
       <h4 className="text-lg font-black text-white uppercase tracking-tighter mb-1">{store.name}</h4>
       <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Mağazamıza Git</p>
-      
+
       <div className="mt-6 w-full h-1 bg-white/5 rounded-full overflow-hidden">
         <div className="h-full w-0 group-hover:w-full transition-all duration-700" style={{ backgroundColor: primaryColor }}></div>
       </div>
@@ -92,13 +101,13 @@ const ChannelsAndSocials: React.FC = () => {
   return (
     <section className="py-24 px-6 max-w-7xl mx-auto -mt-32 relative z-20 font-montserrat">
       <div className="social-card p-10 md:p-16 rounded-[4rem] flex flex-col gap-24">
-        
+
         {/* Mağazalar */}
         {hasChannels && (
           <div className="space-y-12">
             <div className="flex flex-col items-center gap-4">
-               <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.6em]">SATIŞ MAĞAZALARIMIZ</h3>
-               <div className="h-1 w-12 rounded-full" style={{ backgroundColor: config.primaryColor }}></div>
+              <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.6em]">SATIŞ MAĞAZALARIMIZ</h3>
+              <div className="h-1 w-12 rounded-full" style={{ backgroundColor: config.primaryColor }}></div>
             </div>
             <div className="flex flex-wrap justify-center gap-8">
               {config.channels.map((store) => (
@@ -112,8 +121,8 @@ const ChannelsAndSocials: React.FC = () => {
         {hasSocials && (
           <div className="space-y-12">
             <div className="flex flex-col items-center gap-4">
-               <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.6em]">BİZİ TAKİP EDİN</h3>
-               <div className="h-1 w-12 rounded-full" style={{ backgroundColor: config.primaryColor }}></div>
+              <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.6em]">BİZİ TAKİP EDİN</h3>
+              <div className="h-1 w-12 rounded-full" style={{ backgroundColor: config.primaryColor }}></div>
             </div>
             <div className="flex flex-wrap justify-center gap-6 md:gap-12">
               <SocialIcon name="INSTAGRAM" Icon={Instagram} url={config.socials.instagram} color="#E1306C" />
